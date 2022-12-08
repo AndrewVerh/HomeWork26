@@ -4,20 +4,35 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 public class Client {
-    public static void main(String[] args) throws IOException {
-        try (Socket socket = new Socket("127.0.0.1", 8787);
-             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+    public static void main(String... args) throws IOException {
+        Scanner scanner = new Scanner(System.in);
 
-            writer.println("юзВерь");
-            System.out.println(reader.readLine());
+        String host = "127.0.0.1";
+        int port = 8989;
 
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            try (Socket socket = new Socket(host, port);
+                 PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+                //Принимаем сообщение от сервера
+                String answerFromServer = in.readLine();
+                System.out.println(answerFromServer);
+
+                //Вводим город
+                String city = scanner.nextLine();
+                //Отправляем серверу текущий город
+                writer.println(city);
+
+                //Принимаем ответ на наш город
+                System.out.println(in.readLine());
+                System.out.println(in.readLine());
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 }
